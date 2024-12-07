@@ -13,11 +13,11 @@ const login = async (req, res) => {
         const admin = await adminModel.login(email, password);
 
         if (!admin) {
-            return res.status(400).json({ msg: "Wrong credentials" });
+            return res.status(400).json({ msg: "Credenciales incorrectas" });
         }
 
         // Genera el token si las credenciales son correctas
-        const token = createToken({ email: email });
+        const token = createToken({ email });
 
         // Responder con el token en la cabecera y como cookie
         res.status(200)
