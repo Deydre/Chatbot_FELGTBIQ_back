@@ -13,7 +13,7 @@ const morgan = require("./middlewares/morgan")
 app.use(morgan(':method :url :status - :response-time ms :body'));
 
 app.use(cors({
-  origin: ['http://localhost:5173', 'https://trydeployprueba.netlify.app'], // URL del front
+  origin: ['http://localhost:5173', 'https://felgtbiqplus.netlify.app'], // URL del front
   credentials: true
 }));
 

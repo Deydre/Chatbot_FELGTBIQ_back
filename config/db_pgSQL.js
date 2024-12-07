@@ -10,11 +10,11 @@ const { Pool } = pg;
 //     database: process.env.DB_DATABASE,
 // };
 let localPoolConfig = {
-    user: process.env.DB_USER_RENDER,
-    password: process.env.DB_PASSWORD_RENDER,
-    host: process.env.DB_HOST_RENDER,
-    port: process.env.DB_PORT,
-    database: process.env.DB_DATABASE_RENDER,
+    user: process.env.DB_USER_AWS,
+    password: process.env.DB_PASSWORD_AWS,
+    host: process.env.DB_HOST_AWS,
+    port: process.env.DB_PORT_AWS,
+    database: process.env.DB_DATABASE_AWS,
     ssl: true
 };
 

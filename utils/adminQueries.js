@@ -1,16 +1,16 @@
 const queries = {
     createAdmin: `
-    INSERT INTO admin(email, password)
+    INSERT INTO admin_data(email, password)
     VALUES ($1,$2,$3)
     `,
     checkLogin: `
-    SELECT * FROM admin
+    SELECT * FROM admin_data
     WHERE email = $1 AND password = $2
     `,
-    // Buscar el username en el token y mostrar el usuario conectado + Mostrar perfil de usuario concreto ("/users/:id")
+    // Buscar el email en el token y mostrar el usuario conectado 
     getAdminByEmail: `
-    SELECT id, email, password
-    FROM admin
+    SELECT admin_id, email, password
+    FROM admin_data
     WHERE email=$1;`,
    
 }

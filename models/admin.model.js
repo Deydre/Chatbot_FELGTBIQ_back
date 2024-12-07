@@ -3,39 +3,30 @@ const queries = require('../utils/adminQueries') // Queries SQL
 const bcrypt = require('bcryptjs');
 
 
-// POST (CREATE)
-const createAdmin = async (user) => {
-    const { email, password } = admin;
-    let client, result;
+// POST 
 
+const login = async (email, password) => {
+    let client;
+    client = await pool.connect();
     try {
-        client = await pool.connect(); // Espera a abrir conexion
-        console.log("Conexión a la base de datos establecida.");
-        const hashedPassword = password ? await bcrypt.hash(password, 10) : null; // Si hay contraseña, la hasheamos
-        const data = await client.query(queries.createAdmin, [email, hashedPassword])
-        result = data.rowCount
-    } catch (err) {
-        console.log(err);
-        throw err;
+        // Verifica si admin existe
+        const result = await client.query(queries.checkLogin, [email, password]);
+
+        // Si no se encuentra admin, devuelve null
+        if (result.rowCount === 0) {
+            return null;
+        }
+
+        // Si se encuentra admin, devuelve el primer resultado
+        return result.rows[0];
+    } catch (error) {
+        console.log(error.message);
+        throw error;
     } finally {
         client.release();
     }
-    return result
-}
-
-const login = async (email, password) => {
-    let client, result;
-    client = await pool.connect();
-    try {
-        const adminExists = await client.query(queries.checkLogin, [email, password]);
-        console.log(adminExists);
-        return adminExists;
-
-    } catch (error) {
-        console.log(error.message);
-        throw error
-    };
 };
+
 
 // GET BY EMAIL (CONTROLLER PARAMS)
 const getAdminByEmail = async (email) => {
@@ -43,7 +34,7 @@ const getAdminByEmail = async (email) => {
     try {
         client = await pool.connect(); // Espera a abrir conexion
         const data = await client.query(queries.getAdminByEmail, [email])
-        result = data.rows
+        result = data
 
     } catch (err) {
         console.log(err);
@@ -55,7 +46,6 @@ const getAdminByEmail = async (email) => {
 }
 
 const Admin = {
-    createAdmin,
     login,
     getAdminByEmail
 }
