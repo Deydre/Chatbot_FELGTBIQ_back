@@ -11,10 +11,7 @@ let localPoolConfig = {
     host: process.env.DB_HOST_AWS,
     port: process.env.DB_PORT_AWS,
     database: process.env.DB_DATABASE_AWS,
-    ssl: {
-        rejectUnauthorized: false,
-        ca: fs.readFileSync(__dirname + '/certs/eu-west-1-bundle.pem').toString(), // Ensure this path is correct
-    },
+    ssl: { rejectUnauthorized: false }
 };
 
 // Initialize the database pool
