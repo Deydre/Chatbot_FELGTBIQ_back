@@ -15,7 +15,7 @@ let localPoolConfig = {
     host: process.env.DB_HOST_AWS,
     port: process.env.DB_PORT_AWS,
     database: process.env.DB_DATABASE_AWS,
-    // ssl: true
+    ssl: { rejectUnauthorized: false }
 };
 
 const pool = new Pool(localPoolConfig);
