@@ -10,6 +10,7 @@ const login = async (email, password) => {
     client = await pool.connect();
     try {
         // Verifica si admin existe
+        console.log(email, password)
         const result = await client.query(queries.checkLogin, [email, password]);
 
         // Si no se encuentra admin, devuelve null
