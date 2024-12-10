@@ -17,7 +17,7 @@ app.use(cors({
   credentials: true
 }));
 
-// Rutas importadas
+// Rutas importadas>
 const adminRoutes = require("./routes/admin.routes");
 
 

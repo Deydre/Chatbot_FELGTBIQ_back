@@ -1,46 +1,39 @@
-const fs = require('fs');
 require('dotenv').config();
-const { Pool } = require('pg');
+// const pg = require('pg');
+// const { Pool } = pg;
+//local
+// let localPoolConfig = {
+//     user: process.env.DB_USER,
+//     password: process.env.DB_PASSWORD,
+//     host: process.env.DB_HOST,
+//     port: process.env.DB_PORT,
+//     database: process.env.DB_DATABASE,
+// };
 
-// Configuración de conexión al pool
-let localPoolConfig = {
+    // user: process.env.DB_USER_AWS,
+    // password: process.env.DB_PASSWORD_AWS,
+    // host: process.env.DB_HOST_AWS,
+    // port: process.env.DB_PORT_AWS,
+    // database: process.env.DB_DATABASE_AWS,
+    // ssl: true
+
+
+
+// module.exports = pool;
+
+const { Pool } = require('pg'); 
+
+// configuramos la conexión
+const pool = new Pool({
     user: process.env.DB_USER_AWS,
     password: process.env.DB_PASSWORD_AWS,
     host: process.env.DB_HOST_AWS,
-    port: parseInt(process.env.DB_PORT_AWS, 10), // Asegura que sea un número
+    port: process.env.DB_PORT_AWS,
     database: process.env.DB_DATABASE_AWS,
-    ssl: { rejectUnauthorized: false }
-};
-
-const pool = new Pool(localPoolConfig);
-
-// Función para verificar la conexión
-async function testConnection() {
-    try {
-        const result = await pool.query('SELECT 1;'); // Prueba de conexión básica
-        console.log('Conexión exitosa:', result.rows);
-    } catch (error) {
-        console.error('Error al conectar con la base de datos:', error.message);
-    } finally {
-        await pool.end(); // Cierra el pool después de la prueba
-    }
-}
-
-async function fetchAdminData() {
-    try {
-        const query = `
-            SELECT * FROM admin_data;
-        `;
-        const result = await pool.query(query); // Ejecuta la consulta
-        console.log('Datos recuperados de admin_data:', result.rows); // Muestra los datos
-    } catch (error) {
-        console.error('Error al recuperar datos de admin_data:', error.message);
-    }
-}
-fetchAdminData();
-
-
-// Llama a la función de prueba
-testConnection();
+    // ssl: true
+    ssl: {
+        rejectUnauthorized: false // Permite conexiones a certificados no verificados
+    },
+});
 
 module.exports = pool;
