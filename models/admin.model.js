@@ -9,19 +9,24 @@ const login = async (email, password) => {
     let client;
     client = await pool.connect();
     try {
-        // Verifica si admin existe
-        console.log(email, password)
-        const result = await client.query(queries.checkLogin, [email, password]);
+        // Buscar el usuario por email
+        const result = await client.query(queries.checkLogin, [email]);
 
-        // Si no se encuentra admin, devuelve null
         if (result.rowCount === 0) {
             return null;
         }
 
-        // Si se encuentra admin, devuelve el primer resultado
-        return result.rows[0];
+        const admin = result.rows[0];
+
+        // Comparar contraseñas
+        const isPasswordValid = await bcrypt.compare(password, admin.password);
+        if (!isPasswordValid) {
+            return null;
+        }
+
+        return admin;
     } catch (error) {
-        console.log(error.message);
+        console.error("Error en el modelo login:", error.message);
         throw error;
     } finally {
         client.release();
