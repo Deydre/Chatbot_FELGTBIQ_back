@@ -9,10 +9,7 @@ let localPoolConfig = {
     host: process.env.DB_HOST_AWS,
     port: parseInt(process.env.DB_PORT_AWS, 10), // Asegura que sea un número
     database: process.env.DB_DATABASE_AWS,
-    ssl: {
-        rejectUnauthorized: false,
-        // ca: fs.readFileSync(__dirname + '/certs/eu-west-1-bundle.pem').toString(), // Si necesitas un certificado
-    },
+    ssl: { rejectUnauthorized: false }
 };
 
 const pool = new Pool(localPoolConfig);
