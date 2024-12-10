@@ -19,15 +19,19 @@ const login = async (req, res) => {
         // Genera el token si las credenciales son correctas
         const token = createToken({ email });
 
-        // Responder con el token en la cabecera y como cookie
+        console.log("Token generado:", token);
+
+        // Enviar el token en el encabezado, la cookie y el cuerpo de la respuesta
         res.status(200)
             .set('Authorization', `Bearer ${token}`)
-            .cookie('access_token', token)
-            .json({ msg: "Admin logged in" });
-
+            .cookie('access_token', token, { httpOnly: true, secure: true, sameSite: 'Strict' })
+            .json({
+                msg: "Admin logged in",
+                token,
+            });
     } catch (error) {
-        console.error(error);
-        res.status(400).json({ msg: error.message });
+        console.error("Error en login:", error.message);
+        res.status(500).json({ msg: "Error interno del servidor", error: error.message });
     }
 };
 
