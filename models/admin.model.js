@@ -5,7 +5,7 @@ const bcrypt = require('bcryptjs');
 
 // POST (CREATE)
 const createUser = async (user) => {
-    const { email, password} = user;
+    const { email, password } = user;
     let client, result;
 
     try {
@@ -29,19 +29,13 @@ const login = async (email, password) => {
     client = await pool.connect();
     try {
         // Buscar el usuario por email
-        const result = await client.query(queries.checkLogin, [email]);
-
+        const result = await client.query(queries.checkLogin, [email, password]);
+        console.log()
         if (result.rowCount === 0) {
             return null;
         }
 
         const admin = result.rows[0];
-
-        // Comparar contraseñas
-        const isPasswordValid = await bcrypt.compare(password, admin.password);
-        if (!isPasswordValid) {
-            return null;
-        }
 
         return admin;
     } catch (error) {

@@ -28,34 +28,26 @@ const createUser = async (req, res, next) => {
     }
 }
 
+
 //POST
 const login = async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        // Verifica si las credenciales son correctas
+        // Comprobar que existe antes de darle el token
         const admin = await adminModel.login(email, password);
-
-        if (!admin) {
-            return res.status(400).json({ msg: "Credenciales incorrectas" });
+        if (admin) {
+            const token = createToken({ email: email });
+            res.status(200)
+                .set('Authorization', `Bearer ${token}`)
+                .cookie('access_token', token)
+                .json({ msg: "User logged" })
+        } else {
+            res.status(400).json({ msg: "wrong credentials" });
         }
 
-        // Genera el token si las credenciales son correctas
-        const token = createToken({ email });
-
-        console.log("Token generado:", token);
-
-        // Enviar el token en el encabezado, la cookie y el cuerpo de la respuesta
-        res.status(200)
-            .set('Authorization', `Bearer ${token}`)
-            .cookie('access_token', token, { httpOnly: true, secure: true, sameSite: 'Strict' })
-            .json({
-                msg: "Admin logged in",
-                token,
-            });
     } catch (error) {
-        console.error("Error en login:", error.message);
-        res.status(500).json({ msg: "Error interno del servidor", error: error.message });
+        res.status(400).json({ msg: error.message });
     }
 };
 
