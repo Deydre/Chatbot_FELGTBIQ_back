@@ -3,8 +3,32 @@ const { createToken } = require('../config/jsonWebToken');
 const { validationResult } = require("express-validator");
 
 
-//POST
+const createUser = async (req, res, next) => {
+    try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({
+                success: false,
+                errors: errors.array(),
+            });
+        }
+        const newUser = req.body; //
+        console.log(newUser)
+        const response = await adminModel.createUser(newUser);
+        res.status(201).json({
+            "items_created": response,
+            message: `User created: ${req.body.email}`,
+            email: newUser.email,
+            password: "***********",
+        })
+    } catch (error) {
+        console.error('Error updating User:', error)
+        res.status(500).json({ error: 'Internal server error' })
+        next(error)
+    }
+}
 
+//POST
 const login = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -65,6 +89,7 @@ const getAdminByEmail = async (req, res) => {
 }
 
 module.exports = {
+    createUser,
     login,
     logout,
     getAdminByEmail

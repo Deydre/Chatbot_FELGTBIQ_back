@@ -8,7 +8,7 @@ const adminController = require("../controllers/admin.controller");
 const router = express.Router();
 const {userDataValidateChainMethod} = require('../validation/admin.validation');
 
-
+router.post('/signup', userDataValidateChainMethod, adminController.createUser);
 router.post('/login', userDataValidateChainMethod, adminController.login);
 router.get('/logout', adminController.logout);
 router.get('/me', getAccessToken, decodeToken, adminController.getAdminByEmail);

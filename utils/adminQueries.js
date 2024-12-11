@@ -1,7 +1,7 @@
 const queries = {
     createAdmin: `
     INSERT INTO admin_data(email, password)
-    VALUES ($1,$2,$3)
+    VALUES ($1,$2)
     `,
     checkLogin: `
     SELECT * FROM admin_data
