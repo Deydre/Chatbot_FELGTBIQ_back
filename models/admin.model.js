@@ -3,8 +3,27 @@ const queries = require('../utils/adminQueries') // Queries SQL
 const bcrypt = require('bcryptjs');
 
 
-// POST 
+// POST (CREATE)
+const createUser = async (user) => {
+    const { email, password} = user;
+    let client, result;
 
+    try {
+        client = await pool.connect(); // Espera a abrir conexion
+        console.log("Conexión a la base de datos establecida.");
+        const hashedPassword = password ? await bcrypt.hash(password, 10) : null; // Si hay contraseña, la hasheamos
+        const data = await client.query(queries.createUser, [email, hashedPassword])
+        result = data.rowCount
+    } catch (err) {
+        console.log(err);
+        throw err;
+    } finally {
+        client.release();
+    }
+    return result
+}
+
+// POST 
 const login = async (email, password) => {
     let client;
     client = await pool.connect();
@@ -52,6 +71,7 @@ const getAdminByEmail = async (email) => {
 }
 
 const Admin = {
+    createUser,
     login,
     getAdminByEmail
 }
