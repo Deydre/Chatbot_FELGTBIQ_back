@@ -3,6 +3,7 @@ const { createToken } = require('../config/jsonWebToken');
 const { validationResult } = require("express-validator");
 
 
+
 const createUser = async (req, res, next) => {
     try {
         const errors = validationResult(req);
@@ -28,12 +29,12 @@ const createUser = async (req, res, next) => {
     }
 }
 
+
 //POST
 const login = async (req, res) => {
     try {
         const { email, password } = req.body;
-
-        // Verifica si las credenciales son correctas
+        // Comprobar que existe antes de darle el token
         const admin = await adminModel.login(email, password);
 
         if (!admin) {
@@ -43,21 +44,45 @@ const login = async (req, res) => {
         // Genera el token si las credenciales son correctas
         const token = createToken({ email });
 
-        console.log("Token generado:", token);
-
-        // Enviar el token en el encabezado, la cookie y el cuerpo de la respuesta
+        // Responder con el token en la cabecera y como cookie
         res.status(200)
             .set('Authorization', `Bearer ${token}`)
-            .cookie('access_token', token, { httpOnly: true, secure: true, sameSite: 'Strict' })
-            .json({
-                msg: "Admin logged in",
-                token,
-            });
+            .cookie('access_token', token)
+            .json({ msg: "Admin logged in" });
+
     } catch (error) {
-        console.error("Error en login:", error.message);
-        res.status(500).json({ msg: "Error interno del servidor", error: error.message });
+        console.error(error);
+        res.status(400).json({ msg: error.message });
     }
 };
+
+
+//POST
+// const login = async (req, res) => {
+//     try {
+//         const { email, password } = req.body;
+
+//         // Verifica si las credenciales son correctas
+//         const admin = await adminModel.login(email, password);
+
+//         if (!admin) {
+//             return res.status(400).json({ msg: "Credenciales incorrectas" });
+//         }
+
+//         // Genera el token si las credenciales son correctas
+//         const token = createToken({ email });
+
+//         // Responder con el token en la cabecera y como cookie
+//         res.status(200)
+//             .set('Authorization', `Bearer ${token}`)
+//             .cookie('access_token', token)
+//             .json({ msg: "Admin logged in" });
+
+//     } catch (error) {
+//         console.error(error);
+//         res.status(400).json({ msg: error.message });
+//     }
+// };
 
 
 const logout = async (req, res) => {
