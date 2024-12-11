@@ -9,17 +9,22 @@ const login = async (req, res) => {
         const { email, password } = req.body;
         // Comprobar que existe antes de darle el token
         const admin = await adminModel.login(email, password);
-        if (admin) {
-            const token = createToken({ email: email });
-            res.status(200)
-                .set('Authorization', `Bearer ${token}`)
-                .cookie('access_token', token)
-                .json({ msg: "User logged" })
-        } else {
-            res.status(400).json({ msg: "wrong credentials" });
+
+        if (!admin) {
+            return res.status(400).json({ msg: "Credenciales incorrectas" });
         }
 
+        // Genera el token si las credenciales son correctas
+        const token = createToken({ email });
+
+        // Responder con el token en la cabecera y como cookie
+        res.status(200)
+            .set('Authorization', `Bearer ${token}`)
+            .cookie('access_token', token)
+            .json({ msg: "Admin logged in" });
+
     } catch (error) {
+        console.error(error);
         res.status(400).json({ msg: error.message });
     }
 };
